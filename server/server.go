@@ -10,8 +10,9 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", sayHello)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		panic(err)
-	}
+	fs := http.FileServer(http.Dir("../ui/build"))
+	http.Handle("/", http.StripPrefix("/", fs))
+
+	http.HandleFunc("/hello", sayHello)
+	http.ListenAndServe(":8080", nil)
 }
